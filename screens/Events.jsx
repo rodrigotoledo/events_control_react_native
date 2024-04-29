@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {ScrollView, View, Text, TouchableOpacity, Image, SafeAreaView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import Config from 'react-native-config';
 import axios from 'axios';
 import HeaderAuthenticated from '../components/HeaderAuthenticated';
 axios.defaults.baseURL = Config.API_ADDRESS;
 
+
 const Events = () => {
+  const navigation = useNavigation();
   const [token, setToken] = useState(false)
   const [events, setEvents] = useState([]);
   const [participantEventIds, setParticipantEventIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const scrollViewRef = useRef();
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('/events', {
-        headers: {
-          Authorization: token // Adicionando o token no cabeçalho
-        }
-      });
+      const response = await axios.get('/events');
       setEvents(JSON.parse(response.data.events));
       setParticipantEventIds(response.data.participant_event_ids);
     } catch (error) {
@@ -31,12 +31,7 @@ const Events = () => {
   const handlePostEvent = async (selectedEventId) => {
     try {
       const response = await axios.post('/events/toggle_activation',
-        { event_id: selectedEventId },
-        {
-          headers: {
-            Authorization: token // Adicionando o token no cabeçalho
-          }
-        }
+        { event_id: selectedEventId }
       );
       fetchEvents();
     } catch (error) {
@@ -44,15 +39,26 @@ const Events = () => {
     }
   };
 
-  useEffect(() => {
-    const getToken = async () => {
-      const value = await AsyncStorage.getItem('authToken');
-      setToken(value);
-    };
+  const getToken = async () => {
+    const value = await AsyncStorage.getItem('authToken');
+    setToken(value);
+  };
 
+  useEffect(() => {
     getToken();
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getToken();
+      fetchEvents();
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    });
+
+    // Return a função de limpeza para remover o listener quando a tela for desmontada
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView className="bg-white container h-screen pb-10 px-4">
@@ -60,7 +66,7 @@ const Events = () => {
       <View className="w-full flex flex-row space-x-2 items-center justify-center align-middle">
         <Text className="text-2xl text-slate-700">Lista de Eventos</Text>
       </View>
-      <ScrollView className="my-2">
+      <ScrollView ref={scrollViewRef} className="my-2">
         <View className="space-y-4">
           {isLoading ? (
             <Text>Carregando...</Text>
@@ -85,12 +91,14 @@ const Events = () => {
 
                     {/* Remova a propriedade "flex" do contêiner */}
                     <View className="flex flex-row items-center justify-between space-x-1">
-                      <Text className="">Ocorerá em: {event.formatted_scheduled_at}</Text>
+                      <Text className="">Ocorrerá em: {event.formatted_scheduled_at}</Text>
+                      {event.can_participate && (
                       <TouchableOpacity
                         className={`bg-green-600 px-2 py-1 rounded  ${participantEventIds.includes(event.id) ? 'bg-yellow-600' : 'bg-green-600'}`}
                         onPress={() => handlePostEvent(event.id)}>
                         <Text className="font-bold text-white">{participantEventIds.includes(event.id) ? "Sair" : "Participar"}</Text>
                       </TouchableOpacity>
+                      )}
                     </View>
                   </View>
                 </View>

@@ -31,29 +31,25 @@ const SignUp = () => {
         }
       });
 
-      // Se a requisição for bem-sucedida (status 201), prosseguir com o token e a navegação
       const token = response.data.token;
+      await AsyncStorage.clear();
       await AsyncStorage.setItem('authToken', token);
-      console.log('Navegar para Events');
+      await AsyncStorage.setItem('participant_name', response.data.participant.name)
+      await AsyncStorage.setItem('participant_email', response.data.participant.email)
       navigation.navigate('Events');
 
     } catch (error) {
-      // Se houver erros de validação (status 422), exibir os erros e rolar para o topo da tela
       if (error.response && error.response.data && error.response.data.errors && error.response.status === 422) {
         setErrors(error.response.data.errors);
         scrollViewRef.current.scrollTo({ y: 0, animated: true });
       } else {
-        // Se for outro tipo de erro, tratar de acordo
-        console.error('Erro ao criar participante:', error);
         setErrors([{ message: 'Erro desconhecido ao tentar criar o participante.' }]);
       }
 
     } finally {
-      // Definir isLoading como false independentemente do resultado da requisição
       setIsLoading(false);
     }
   };
-
 
   const handleSinIn = async () => {
     navigation.navigate('SignIn');

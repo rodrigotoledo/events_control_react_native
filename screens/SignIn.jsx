@@ -20,7 +20,10 @@ const SignIn = () => {
     try {
       const response = await axios.post('/sign_in', data);
       const token = response.data.token;
+      await AsyncStorage.clear();
       await AsyncStorage.setItem('authToken', token);
+      await AsyncStorage.setItem('participant_name', response.data.participant.name)
+      await AsyncStorage.setItem('participant_email', response.data.participant.email)
       navigation.navigate('Events');
     } catch (error) {
       setError('Falha ao entrar');

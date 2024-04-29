@@ -1,42 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, Image, TouchableOpacity, Text} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const styles = StyleSheet.create({
-  stretch: {
-    width: 100,
-    resizeMode: 'contain',
-  },
-});
-
 const HeaderAuthenticated = () => {
-  const [authToken, setAuthToken] = useState(false);
   const navigation = useNavigation();
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token !== undefined) {
-        setAuthToken(token);
-      }
-    };
+  const [participantName, setParticipantName] = useState(null);
+  const [participantEmail, setParticipantEmail] = useState(null);
 
-    checkToken();
+  const fetchParticipantData = async () => {
+    try {
+      const participantName = await AsyncStorage.getItem('participant_name');
+      const participantEmail = await AsyncStorage.getItem('participant_email');
+      setParticipantName(participantName);
+      setParticipantEmail(participantEmail);
+    } catch (error) {
+      console.error('Error fetching participant data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchParticipantData();
   }, []);
 
-  const handleLogout = async () => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchParticipantData();
+    });
+
+    // Return a função de limpeza para remover o listener quando a tela for desmontada
+    return unsubscribe;
+  }, [navigation]);
+
+
+  const handleLogout =  async () => {
     await AsyncStorage.removeItem('authToken');
-    setAuthToken(null);
     navigation.navigate('SignIn');
   };
 
   return (
     <View>
-      {authToken &&
-      <View className="fixed flex items-end right-0 mt-2 mr-2">
-        <TouchableOpacity className=" bg-yellow-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}><Text className="text-white">Sair</Text></TouchableOpacity>
+      <View className="fixed flex flex-row justify-end right-0 mt-2 mr-2">
+        {participantName && (
+          <View className="mr-10">
+            <Text>Nome: <Text className="font-bold">{participantName}</Text></Text>
+            <Text>E-mail: <Text className="font-bold">{participantEmail}</Text></Text>
+          </View>
+        )}
+        <TouchableOpacity className="bg-yellow-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}>
+          <Text className="text-white">Sair</Text>
+        </TouchableOpacity>
       </View>
-      }
       <View className="w-full justify-center items-center">
         <Image
           source={require('../assets/logo.jpeg')}
