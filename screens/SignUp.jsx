@@ -1,20 +1,17 @@
 import React, { useState, useRef } from 'react';
 import {SafeAreaView, ScrollView, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Config from 'react-native-config';
-import axios from 'axios';
-axios.defaults.baseURL = Config.API_ADDRESS;
+import axios from '../axiosConfig'
 import {useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
-import { faker } from '@faker-js/faker';
 
 const SignUp = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState(faker.internet.email());
-  const [name, setName] = useState(faker.internet.userName());
-  const [phone, setPhone] = useState('123123');
-  const [password, setPassword] = useState('password');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('password');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState(false);
   const scrollViewRef = useRef();

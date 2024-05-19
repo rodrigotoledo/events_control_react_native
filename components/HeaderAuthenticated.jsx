@@ -47,7 +47,7 @@ const HeaderAuthenticated = () => {
             <Text>E-mail: <Text className="font-bold">{participantEmail}</Text></Text>
           </View>
         )}
-        <TouchableOpacity className="bg-yellow-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}>
+        <TouchableOpacity className="bg-gray-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}>
           <Text className="text-white">Sair</Text>
         </TouchableOpacity>
       </View>
