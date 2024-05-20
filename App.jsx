@@ -7,6 +7,7 @@ import StorageListener from 'react-native-async-storage-listener';
 import Events from './screens/Events';
 import SignIn from './screens/SignIn';
 import SignUp from './screens/SignUp';
+import Event from './screens/Event';
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,11 @@ const AuthenticatedTabsStack = () => {
         name="Events"
         options={{headerShown: false}}
         component={Events}
+      />
+      <Stack.Screen
+        name="Event"
+        options={{headerShown: false}}
+        component={Event}
       />
       <Stack.Screen
         name="SignIn"
