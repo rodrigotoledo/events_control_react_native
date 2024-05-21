@@ -9,7 +9,7 @@ const EventInfo = ({ eventId }) => {
   const [coordinates, setCoordinates] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [ event, setEvent ] = useState(null);
-  const [participantEventIds, setParticipantEventIds] = useState([]);
+  const [userEventIds, setUserEventIds] = useState([]);
   const fadeAnim = useRef(new Animated.Value(1)).current; // Valor animado inicial
   const [region, setRegion] = useState({
     latitude: 0,
@@ -26,7 +26,7 @@ const EventInfo = ({ eventId }) => {
       if(eventParsed.display_location) {
         setAddress(eventParsed.location);
       }
-      setParticipantEventIds(response.data.participant_event_ids);
+      setUserEventIds(response.data.user_event_ids);
     } catch (error) {
       console.error('Error fetching event:', error);
     } finally {
@@ -87,14 +87,14 @@ const EventInfo = ({ eventId }) => {
 
   const handleParticipateEvent = async (eventId) => {
     try {
-      const isParticipating = participantEventIds.includes(eventId);
+      const isParticipating = userEventIds.includes(eventId);
       const response = await axios.post('/events/toggle_activation',
         { event_id: eventId }
       ).then(() => {
         if (isParticipating) {
-          setParticipantEventIds(prevIds => prevIds.filter(id => id !== eventId));
+          setUserEventIds(prevIds => prevIds.filter(id => id !== eventId));
         } else {
-          setParticipantEventIds(prevIds => [...prevIds, eventId]);
+          setUserEventIds(prevIds => [...prevIds, eventId]);
         }
       });
     } catch (error) {
@@ -128,11 +128,11 @@ const EventInfo = ({ eventId }) => {
                 )}
                 {event.can_participate && (
                   <TouchableOpacity
-                    className={`bg-green-700 px-2 my-2 self-start py-1 rounded ${participantEventIds.includes(event.id) ? 'bg-yellow-600' : 'bg-green-700'}`}
+                    className={`bg-green-700 px-2 my-2 self-start py-1 rounded ${userEventIds.includes(event.id) ? 'bg-yellow-600' : 'bg-green-700'}`}
                     onPress={() => handlePress(event.id)}
                   >
                     <Text className="font-bold text-white">
-                      {participantEventIds.includes(event.id) ? "Sair" : "Participar"}
+                      {userEventIds.includes(event.id) ? "Sair" : "Participar"}
                     </Text>
                   </TouchableOpacity>
                 )}
