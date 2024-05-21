@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface HostelTribesTests : XCTestCase
+@interface EventsControlTests : XCTestCase
 
 @end
 
-@implementation HostelTribesTests
+@implementation EventsControlTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {
