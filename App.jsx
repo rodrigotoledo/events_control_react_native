@@ -10,56 +10,6 @@ import SignUp from './screens/SignUp';
 import Event from './screens/Event';
 
 const Stack = createStackNavigator();
-
-const SignInSignUpStack = () => {
-  return (
-    <Stack.Navigator initialRouteName="SignIn">
-      <Stack.Screen
-        name="SignIn"
-        options={{headerShown: false}}
-        component={SignIn}
-      />
-      <Stack.Screen
-        name="SignUp"
-        options={{headerShown: false}}
-        component={SignUp}
-      />
-      <Stack.Screen
-        name="Events"
-        options={{headerShown: false}}
-        component={Events}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const AuthenticatedTabsStack = () => {
-  return (
-    <Stack.Navigator initialRouteName="Events">
-      <Stack.Screen
-        name="Events"
-        options={{headerShown: false}}
-        component={Events}
-      />
-      <Stack.Screen
-        name="Event"
-        options={{headerShown: false}}
-        component={Event}
-      />
-      <Stack.Screen
-        name="SignIn"
-        options={{headerShown: false}}
-        component={SignIn}
-      />
-      <Stack.Screen
-        name="SignUp"
-        options={{headerShown: false}}
-        component={SignUp}
-      />
-    </Stack.Navigator>
-  );
-};
-
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
@@ -98,7 +48,36 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      {isAuthenticated ? <AuthenticatedTabsStack /> : <SignInSignUpStack />}
+      <Stack.Navigator initialRouteName='SignIn'>
+        {isAuthenticated && (
+        // Screens for logged in users
+        <Stack.Group initialRouteName='Events'  screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="Event"
+            options={{headerShown: false}}
+            component={Event}
+          />
+        </Stack.Group>
+        )}
+        {/* Common modal screens */}
+        <Stack.Group initialRouteName='SignIn'  screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="Events"
+            options={{headerShown: false}}
+            component={Events}
+          />
+          <Stack.Screen
+            name="SignIn"
+            options={{headerShown: false}}
+            component={SignIn}
+          />
+          <Stack.Screen
+            name="SignUp"
+            options={{headerShown: false}}
+            component={SignUp}
+          />
+        </Stack.Group>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

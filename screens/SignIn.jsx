@@ -22,8 +22,8 @@ const SignIn = () => {
       const token = response.data.token;
       await AsyncStorage.clear();
       await AsyncStorage.setItem('authToken', token);
-      await AsyncStorage.setItem('participant_name', response.data.participant.name)
-      await AsyncStorage.setItem('participant_email', response.data.participant.email)
+      await AsyncStorage.setItem('user_name', response.data.user.name)
+      await AsyncStorage.setItem('user_email', response.data.user.email)
       navigation.navigate('Events');
     } catch (error) {
       setError('Falha ao entrar');

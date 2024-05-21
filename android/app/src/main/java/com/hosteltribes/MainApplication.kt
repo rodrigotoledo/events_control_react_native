@@ -1,4 +1,4 @@
-package com.hosteltribes
+package com.eventscontrol
 
 import android.app.Application
 import com.facebook.react.PackageList

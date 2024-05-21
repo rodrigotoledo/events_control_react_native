@@ -82,9 +82,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.hosteltribes"
+    namespace "com.eventscontrol"
     defaultConfig {
-        applicationId "com.hosteltribes"
+        applicationId "com.eventscontrol"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

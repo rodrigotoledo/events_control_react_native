@@ -6,27 +6,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HeaderAuthenticated = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [participantName, setParticipantName] = useState(null);
-  const [participantEmail, setParticipantEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
 
-  const fetchParticipantData = async () => {
+  const fetchUserData = async () => {
     try {
-      const participantName = await AsyncStorage.getItem('participant_name');
-      const participantEmail = await AsyncStorage.getItem('participant_email');
-      setParticipantName(participantName);
-      setParticipantEmail(participantEmail);
+      const userName = await AsyncStorage.getItem('user_name');
+      const userEmail = await AsyncStorage.getItem('user_email');
+      setUserName(userName);
+      setUserEmail(userEmail);
     } catch (error) {
-      console.error('Error fetching participant data:', error);
+      console.error('Error fetching user data:', error);
     }
   };
 
   useEffect(() => {
-    fetchParticipantData();
+    fetchUserData();
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchParticipantData();
+      fetchUserData();
     });
 
     // Return a função de limpeza para remover o listener quando a tela for desmontada
@@ -40,12 +40,12 @@ const HeaderAuthenticated = () => {
   };
 
   return (
-    <View>
+    <View className="bg-white">
       <View className="fixed flex flex-row justify-between mt-2 mr-2">
-        {participantName && (
+        {userName && (
           <View className="mr-10">
-            <Text>Nome: <Text className="font-bold">{participantName}</Text></Text>
-            <Text>E-mail: <Text className="font-bold">{participantEmail}</Text></Text>
+            <Text>Nome: <Text className="font-bold">{userName}</Text></Text>
+            <Text>E-mail: <Text className="font-bold">{userEmail}</Text></Text>
           </View>
         )}
         <View className="space-x-1 flex flex-row">
@@ -61,11 +61,11 @@ const HeaderAuthenticated = () => {
       </View>
       <View className="w-full justify-center items-center">
         <Image
-          source={require('../assets/logo.jpeg')}
+          source={require('../assets/logo.png')}
           className="h-48 w-48 "
           resizeMode="contain"
           />
-          <Text className="text-4xl text-slate-700">Hostel Tribes</Text>
+          <Text className="text-4xl text-slate-700">Events Control</Text>
       </View>
     </View>
   );

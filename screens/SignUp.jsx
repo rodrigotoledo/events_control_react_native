@@ -18,8 +18,8 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post('/participants', {
-        participant: {
+      const response = await axios.post('/users', {
+        user: {
           email,
           name,
           phone,
@@ -31,8 +31,8 @@ const SignUp = () => {
       const token = response.data.token;
       await AsyncStorage.clear();
       await AsyncStorage.setItem('authToken', token);
-      await AsyncStorage.setItem('participant_name', response.data.participant.name)
-      await AsyncStorage.setItem('participant_email', response.data.participant.email)
+      await AsyncStorage.setItem('user_name', response.data.user.name)
+      await AsyncStorage.setItem('user_email', response.data.user.email)
       navigation.navigate('Events');
 
     } catch (error) {
@@ -40,7 +40,7 @@ const SignUp = () => {
         setErrors(error.response.data.errors);
         scrollViewRef.current.scrollTo({ y: 0, animated: true });
       } else {
-        setErrors([{ message: 'Erro desconhecido ao tentar criar o participante.' }]);
+        setErrors([{ message: 'Erro desconhecido ao tentar criar o usere.' }]);
       }
 
     } finally {
@@ -53,7 +53,7 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="bg-white container h-screen pb-10 px-4">
+    <SafeAreaView className="bg-[#fff333] container h-screen pb-10 px-4">
       <Header/>
       <View className="w-full flex flex-row space-x-2 items-center justify-center align-middle">
         <Text className="text-2xl text-slate-700">Faça seu cadastro</Text>
