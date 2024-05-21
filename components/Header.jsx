@@ -6,7 +6,7 @@ const Header = () => {
     <View className="bg-white">
       <View className="w-full justify-center items-center">
         <Image
-          source={require('../assets/logo.png')}
+          source={require('../assets/logo-removebg-preview.png')}
           className="h-48 w-48 "
           resizeMode="contain"
           />
