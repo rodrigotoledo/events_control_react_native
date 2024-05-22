@@ -14,7 +14,7 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       const response = await axios.get('/events');
-      setEvents(JSON.parse(response.data.events));
+      setEvents(response.data);
     } catch (error) {
       console.error('Error fetching events:', error);
     } finally {

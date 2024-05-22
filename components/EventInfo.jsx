@@ -88,9 +88,7 @@ const EventInfo = ({ eventId }) => {
   const handleParticipateEvent = async (eventId) => {
     try {
       const isParticipating = userEventIds.includes(eventId);
-      const response = await axios.post('/events/toggle_activation',
-        { event_id: eventId }
-      ).then(() => {
+      const response = await axios.patch(`/events/${eventId}/toggle_activation`).then(() => {
         if (isParticipating) {
           setUserEventIds(prevIds => prevIds.filter(id => id !== eventId));
         } else {
