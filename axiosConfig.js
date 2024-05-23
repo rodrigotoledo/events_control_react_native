@@ -1,9 +1,7 @@
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
 axios.defaults.baseURL = Config.API_ADDRESS;
-console.log(axios.defaults.baseURL)
 
 axios.interceptors.request.use(
   async config => {
