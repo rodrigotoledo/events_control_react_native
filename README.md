@@ -12,6 +12,7 @@ To start Metro, run the following command from the _root_ of your React Native p
 
 ```bash
 adb reverse tcp:9090 tcp:9090
+adb reverse tcp:8081 tcp:8081
 ```
 
 ```bash
@@ -58,6 +59,18 @@ Now that you have successfully run the app, let's modify it.
 2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
 
    For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+
+## Step 4: Clean data
+
+```bash
+yarn cache clean
+```
+
+## Step 5: Upgrade the yarn
+
+```bash
+yarn set version stable
+```
 
 ## Congratulations! :tada:
 

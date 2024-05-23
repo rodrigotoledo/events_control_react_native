@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Config from 'react-native-config';
 import { ScrollView, Animated, View, Text, Image, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { SliderBox } from "react-native-image-slider-box";
 import axios from '../axiosConfig';
 
 const EventInfo = ({ eventId }) => {
@@ -34,14 +35,11 @@ const EventInfo = ({ eventId }) => {
     }
   };
 
-
-
   useEffect(() => {
     fetchEvent();
   }, []);
 
   useEffect(() => {
-    // Aqui você faria uma solicitação para obter as coordenadas do endereço usando um serviço de geocodificação
     const fetchCoordinates = async () => {
       try {
         const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${Config.GOOGLE_MAPS_APY_KEY}`);
@@ -49,7 +47,6 @@ const EventInfo = ({ eventId }) => {
         if (results && results.length > 0) {
           const { geometry } = results[0];
           const { location } = geometry;
-          console.log(location)
           setCoordinates({ latitude: location.lat, longitude: location.lng });
           setRegion(prevRegion => ({
             ...prevRegion,
@@ -68,7 +65,6 @@ const EventInfo = ({ eventId }) => {
 
 
   const handlePress = (eventId) => {
-    // Animação de fade
     Animated.sequence([
       Animated.timing(fadeAnim, {
         toValue: 0.5,
@@ -137,9 +133,11 @@ const EventInfo = ({ eventId }) => {
               </View>
               {event.display_location && address && (
               <MapView
-                style={{ height: 150, width: '100%', borderWidth: 1 }}
+                className="w-full"
+                style={{ height: 200 }}
                 initialRegion={region}
                 region={region}
+                scrollEnabled={false}
               >
                 {coordinates && (
                   <Marker
@@ -149,6 +147,20 @@ const EventInfo = ({ eventId }) => {
                   />
                 )}
               </MapView>
+              )}
+              {event.images_url.length > 0 && (
+
+                <View className="w-full rounded-md my-2">
+                  <Text className="font-bold text-xl">Imagens</Text>
+                  <SliderBox images={event.images_url}
+                    dotColor="#FFEE58"
+                    inactiveDotColor="#90A4AE" dotStyle={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                      marginHorizontal: 0,
+                    }} />
+                </View>
               )}
             </View>
           </View>
