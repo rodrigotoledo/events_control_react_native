@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {SafeAreaView, ScrollView, View, Text, TouchableOpacity, TextInput} from 'react-native';
+import { useMutation } from '@tanstack/react-query'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../axiosConfig'
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Header from '../components/Header';
 
 const SignUp = () => {
@@ -12,13 +13,14 @@ const SignUp = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState(false);
+  const [errors, setErrors] = useState([]);
   const scrollViewRef = useRef();
 
-  const handleSignUp = async () => {
-    try {
-      const response = await axios.post('/users', {
+  const handleSignUpMutation = useMutation({
+
+    mutationFn: async () => {
+      setErrors([])
+      response = await axios.post('/users', {
         user: {
           email,
           name,
@@ -26,34 +28,44 @@ const SignUp = () => {
           password,
           password_confirmation: passwordConfirmation,
         }
-      });
-
-      const token = response.data.token;
-      await AsyncStorage.clear();
-      await AsyncStorage.setItem('authToken', token);
-      await AsyncStorage.setItem('user_name', response.data.user.name)
-      await AsyncStorage.setItem('user_email', response.data.user.email)
-      navigation.navigate('Events');
-
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors && error.response.status === 422) {
+      })
+      return response;
+    },
+    onSuccess: async (response) => {
+      try {
+        const token = response.data.token;
+        await AsyncStorage.clear();
+        await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('user_name', response.data.user.name)
+        await AsyncStorage.setItem('user_email', response.data.user.email)
+        navigation.navigate('Events');
+      } catch (error) {
+        console.log(error);
+        setErrors(['Erro desconhecido ao tentar criar o usuario'])
+      }
+    }, onError: (error) => {
+       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
-        scrollViewRef.current.scrollTo({ y: 0, animated: true });
       } else {
-        setErrors([{ message: 'Erro desconhecido ao tentar criar o usere.' }]);
+        setErrors(['Erro desconhecido ao tentar criar o usuario']);
       }
 
-    } finally {
-      setIsLoading(false);
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
     }
-  };
+  })
 
   const handleSinIn = async () => {
     navigation.navigate('SignIn');
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      setErrors([]);
+    }, [])
+  );
+
   return (
-    <SafeAreaView className="bg-[#fff333] container h-screen pb-10 px-4">
+    <SafeAreaView className="bg-white container h-screen pb-10 px-4">
       <Header/>
       <View className="w-full flex flex-row space-x-2 items-center justify-center align-middle">
         <Text className="text-2xl text-slate-700">Faça seu cadastro</Text>
@@ -61,18 +73,19 @@ const SignUp = () => {
 
       <ScrollView ref={scrollViewRef} className="my-2 ">
         <View className="space-y-4">
-          {errors && errors.length > 0 && (
+          {handleSignUpMutation.isError && (
             <View className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
               <Text className="font-bold">Ops. Alguns erros:</Text>
-              <View>
-                {errors.map((error, index) => (
-                  <Text key={index}>{error}</Text>
-                ))}
-              </View>
+              {errors.map((errMsg, index) => (
+                <View key={index}>
+                  <Text>{errMsg}</Text>
+                </View>
+              ))}
             </View>
           )}
 
-          {isLoading && <View><Text className="font-bold">Carregando...</Text></View>}
+
+          {handleSignUpMutation.isLoading && <View><Text className="font-bold">Carregando...</Text></View>}
           <View >
             <Text>Email:</Text>
             <TextInput
@@ -134,7 +147,7 @@ const SignUp = () => {
 
             <TouchableOpacity
               className="bg-yellow-800 rounded-md p-4 border-0"
-              onPress={handleSignUp}>
+              onPress={() => { handleSignUpMutation.mutate()}}>
               <Text className="text-center text-white">Cadastre-se</Text>
             </TouchableOpacity>
             <TouchableOpacity
