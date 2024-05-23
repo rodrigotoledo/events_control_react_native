@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import './ignoreWarnings';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,7 +28,6 @@ const App = () => {
     checkAuthentication();
 
     const channels = StorageListener.getChannels();
-    // Inscreva-se para ouvir as mudanças no AsyncStorage
     const subscriber = StorageListener.addSubscriber(async () => {
       try {
         const value = await AsyncStorage.getItem('authToken');
@@ -48,19 +48,13 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='SignIn'>
-        {isAuthenticated && (
-        // Screens for logged in users
-        <Stack.Group initialRouteName='Events' screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName={isAuthenticated ? 'Events' : 'SignIn'}>
+        <Stack.Group initialRouteName='SignIn' screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="Event"
             options={{headerShown: false}}
             component={Event}
           />
-        </Stack.Group>
-        )}
-        {/* Common modal screens */}
-        <Stack.Group initialRouteName='SignIn' screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="Events"
             options={{headerShown: false}}
