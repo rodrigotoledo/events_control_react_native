@@ -3,7 +3,7 @@ import {View, Image, TouchableOpacity, Text} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HeaderAuthenticated = () => {
+const HeaderAuthenticated = ({title}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const [userName, setUserName] = useState(null);
@@ -65,8 +65,15 @@ const HeaderAuthenticated = () => {
           className="h-48 w-48 "
           resizeMode="contain"
           />
-          <Text className="text-4xl text-slate-700">Events Control</Text>
+          <Text className="text-2xl text-slate-700">Events Control</Text>
       </View>
+      {title && (
+        <View className="w-full">
+          <Text className="py-2 text-left text-xl font-bold">
+            {title}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
