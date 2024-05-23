@@ -1,44 +1,28 @@
-import React, { useEffect, useState, } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query'
 import {FlatList, View, Text, SafeAreaView} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import axios from '../axiosConfig'
 import HeaderAuthenticated from '../components/HeaderAuthenticated';
 import EventItem from '../components/EventItem';
 
+const fetchEvents = async () => {
+  const response = await axios.get('/events');
+  return response.data;
+};
+
+const renderEventItem = ({ item: event }) => (
+  <EventItem
+    event={event}
+  />
+);
 
 const Events = () => {
-  const navigation = useNavigation();
-  const [events, setEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get('/events');
-      setEvents(response.data);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { isLoading, isError, data: events, error } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  })
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchEvents();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  const renderEventItem = ({ item: event }) => (
-    <EventItem
-      event={event}
-    />
-  );
   return (
     <SafeAreaView className="bg-white container h-screen pb-10 px-4">
       <HeaderAuthenticated />
