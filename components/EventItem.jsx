@@ -42,7 +42,7 @@ const EventItem = ({ event }) => {
           <View className="flex space-y-2">
             <Text>Ocorrerá em: {event.formatted_scheduled_at}</Text>
             <TouchableOpacity
-              className="bg-green-800 px-2 py-1 rounded self-start"
+              className="bg-yellow-800 px-2 py-1 rounded self-start"
               onPress={() => handleEventMoreInfo(event.id)}
             >
               <Text className="font-bold text-white">

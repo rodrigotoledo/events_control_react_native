@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import { useMutation } from '@tanstack/react-query'
 import axios from '../axiosConfig'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Header from '../components/Header';
 
 const SignIn = () => {
@@ -11,28 +12,41 @@ const SignIn = () => {
   const [error, setError] = useState('');
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    const data = {
-      email: email,
-      password: password,
-    };
+  const handleSignInMutation = useMutation({
 
-    try {
-      const response = await axios.post('/sign_in', data);
-      const token = response.data.token;
-      await AsyncStorage.clear();
-      await AsyncStorage.setItem('authToken', token);
-      await AsyncStorage.setItem('user_name', response.data.user.name)
-      await AsyncStorage.setItem('user_email', response.data.user.email)
-      navigation.navigate('Events');
-    } catch (error) {
+    mutationFn: () => {
+      const data = {
+        email: email,
+        password: password,
+      };
+      return axios.post('/sign_in', data);
+    },
+    onSuccess: async (response) => {
+      try {
+        const token = response.data.token;
+        await AsyncStorage.clear();
+        await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('user_id', response.data.user.id.toString());
+        await AsyncStorage.setItem('user_name', response.data.user.name)
+        await AsyncStorage.setItem('user_email', response.data.user.email)
+        navigation.navigate('Events');
+      } catch (error) {
+        console.log(error);
+      }
+    }, onError: () => {
       setError('Falha ao entrar');
     }
-  };
+  })
 
   const handleSinUp = async () => {
     navigation.navigate('SignUp');
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setError('');
+    }, [])
+  );
 
   return (
     <View className="flex justify-center items-center h-full bg-white">
@@ -69,7 +83,7 @@ const SignIn = () => {
 
           <TouchableOpacity
             className="bg-yellow-800 rounded-md p-4 border-0"
-            onPress={handleLogin}>
+            onPress={() => {handleSignInMutation.mutate()}}>
             <Text className="text-center text-white">Entrar</Text>
           </TouchableOpacity>
           <TouchableOpacity
