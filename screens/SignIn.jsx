@@ -26,6 +26,7 @@ const SignIn = () => {
         const token = response.data.token;
         await AsyncStorage.clear();
         await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('user_id', response.data.user.id.toString());
         await AsyncStorage.setItem('user_name', response.data.user.name)
         await AsyncStorage.setItem('user_email', response.data.user.email)
         navigation.navigate('Events');

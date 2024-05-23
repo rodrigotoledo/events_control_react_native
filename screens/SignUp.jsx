@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { faker } from '@faker-js/faker';
 import {SafeAreaView, ScrollView, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import { useMutation } from '@tanstack/react-query'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,6 +16,14 @@ const SignUp = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errors, setErrors] = useState([]);
   const scrollViewRef = useRef();
+
+  useEffect(() => {
+    setEmail(faker.internet.email());
+    setName(faker.person.fullName());
+    setPhone(faker.phone.number());
+    setPassword('password')
+    setPasswordConfirmation('password')
+  }, []);
 
   const handleSignUpMutation = useMutation({
 
@@ -36,6 +45,7 @@ const SignUp = () => {
         const token = response.data.token;
         await AsyncStorage.clear();
         await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('user_id', response.data.user.id.toString())
         await AsyncStorage.setItem('user_name', response.data.user.name)
         await AsyncStorage.setItem('user_email', response.data.user.email)
         navigation.navigate('Events');
