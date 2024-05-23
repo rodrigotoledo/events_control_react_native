@@ -51,7 +51,7 @@ const App = () => {
       <Stack.Navigator initialRouteName='SignIn'>
         {isAuthenticated && (
         // Screens for logged in users
-        <Stack.Group initialRouteName='Events'  screenOptions={{ headerShown: false }}>
+        <Stack.Group initialRouteName='Events' screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="Event"
             options={{headerShown: false}}
@@ -60,7 +60,7 @@ const App = () => {
         </Stack.Group>
         )}
         {/* Common modal screens */}
-        <Stack.Group initialRouteName='SignIn'  screenOptions={{ headerShown: false }}>
+        <Stack.Group initialRouteName='SignIn' screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="Events"
             options={{headerShown: false}}
