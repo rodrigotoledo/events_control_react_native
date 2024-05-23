@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Config from 'react-native-config';
+import { SliderBox } from "react-native-image-slider-box";
 import { ScrollView, Animated, View, Text, Image, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { SliderBox } from "react-native-image-slider-box";
 import axios from '../axiosConfig';
 
 const EventInfo = ({ eventId }) => {
@@ -151,7 +151,7 @@ const EventInfo = ({ eventId }) => {
               {event.images_url.length > 0 && (
 
                 <View className="w-full rounded-md my-2">
-                  <Text className="font-bold text-xl">Imagens</Text>
+                  <Text className="font-bold text-2xl my-2">Imagens</Text>
                   <SliderBox images={event.images_url}
                     dotColor="#FFEE58"
                     inactiveDotColor="#90A4AE" dotStyle={{

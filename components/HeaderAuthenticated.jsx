@@ -50,11 +50,11 @@ const HeaderAuthenticated = () => {
         )}
         <View className="space-x-1 flex flex-row">
           {route.name !== 'Events' && (
-          <TouchableOpacity onPress={() => navigation.navigate('Events')} className="bg-green-700 top-0 p-2 rounded-md w-auto">
+          <TouchableOpacity onPress={() => navigation.navigate('Events')} className="bg-yellow-700 top-0 p-2 rounded-md w-auto">
             <Text className="text-white">Voltar</Text>
           </TouchableOpacity>
           )}
-          <TouchableOpacity className="bg-gray-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}>
+          <TouchableOpacity className="bg-yellow-600 p-2 top-0 w-auto rounded-md" onPress={handleLogout}>
             <Text className="text-white">Sair</Text>
           </TouchableOpacity>
         </View>
