@@ -77,3 +77,7 @@ buck-out/
 .expo/
 web-build/
 .env
+blob
+.yarn
+.bundle
+yarn.lock
